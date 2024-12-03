@@ -1,0 +1,882 @@
+---
+title: "30538 Final Project"
+author: "Sohyun Lim and Ting Tsai"
+date: "2024-12-05"
+format:
+  pdf:
+    include-in-header: 
+       text: |
+         \usepackage{fvextra}
+         \usepackage[margin=1in]{geometry}  
+         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+include-before-body:
+  text: |
+    \RecustomVerbatimEnvironment{verbatim}{Verbatim}{
+      showspaces = false,
+      showtabs = false,
+      breaksymbolleft={},
+      breaklines
+    }
+
+---
+
+# 1. Load the dataset
+```{python}
+import pandas as pd
+
+# 1. Load the dataset.
+file_path = "/Users/sohyunlim/Desktop/python - final/Public_Health_Statistics_-_Selected_public_health_indicators_by_Chicago_community_area_-_Historical_20241031.csv"
+data = pd.read_csv(file_path)
+data.head()
+
+
+# 2. Change the variable names.
+# Replace parentheses with empty strings, hyphens with underscores, and spaces with underscores in column names
+data.columns = data.columns.str.replace(r"[()]", "", regex=True).str.replace("-", "_").str.replace(" ", "_").str.lower()
+print(data.columns)
+
+
+# 3. Remove unncessary columns.
+columns_to_drop = [
+    "childhood_blood_lead_level_screening",
+    "childhood_lead_poisoning",
+    "gonorrhea_in_females"
+]
+data = data.drop(columns=columns_to_drop)
+print(data.columns)
+```
+
+# 3. Basic Plots (table and graph)
+# To explore the community area by health outcomes and socioeconomic factors
+# 3-1. Create a table of cancer_all_sites (descending) by community area
+# 3-2. Create a table of diabetes_related (descending) by community area
+# 3-3. Create a table of tuberculosis (descending) by community area
+# 3-4. Create a table of below_poverty_level (descending) by community area
+# 3-5. Create a table of no_high_school_diploma (descending) by community area
+# 3-6. Create a table of per_capita_income (descending) by community area
+# 3-7. Create a table of unemployment (descending) by community area
+
+```{python}
+# 3-1. Create a table of cancer_all_sites (descending) by community area
+import pandas as pd
+import altair as alt
+
+# Select necessary columns from dataframe
+cancer_table = data[["community_area", "community_area_name", "cancer_all_sites"]].copy()
+
+# Drop na and arrange by descending
+cancer_table = cancer_table.dropna(subset=["cancer_all_sites"])
+cancer_table = cancer_table.sort_values(by="cancer_all_sites", ascending=False)
+
+# Initiate index
+cancer_table.reset_index(drop=True, inplace=True)
+
+# Print the result
+print(cancer_table)
+
+
+# 3-2. Create a table of diabetes_related (descending) by community area
+# Select necessary columns from dataframe
+diabetes_table = data[["community_area", "community_area_name", "diabetes_related"]].copy()
+
+# Drop na and arrange by descending
+diabetes_table = diabetes_table.dropna(subset=["diabetes_related"])
+diabetes_table = diabetes_table.sort_values(by="diabetes_related", ascending=False)
+
+# Initiate index
+diabetes_table.reset_index(drop=True, inplace=True)
+
+# Print the result
+print(diabetes_table)
+
+# 3-3. Create a table of tuberculosis (descending) by community area
+# Select necessary columns from dataframe
+tuberculosis_table = data[["community_area", "community_area_name", "tuberculosis"]].copy()
+
+# Drop na and arrange by descending
+tuberculosis_table = tuberculosis_table.dropna(subset=["tuberculosis"])
+tuberculosis_table = tuberculosis_table.sort_values(by="tuberculosis", ascending=False)
+
+# Initiate index
+tuberculosis_table.reset_index(drop=True, inplace=True)
+
+# Print the result
+print(tuberculosis_table)
+
+
+# 3-4. Create a table of below_poverty_level (descending) by community area
+# Select necessary columns from dataframe
+poverty_table = data[["community_area", "community_area_name", "below_poverty_level"]].copy()
+
+# Drop na and arrange by descending
+poverty_table = poverty_table.dropna(subset=["below_poverty_level"])
+poverty_table = poverty_table.sort_values(by="below_poverty_level", ascending=False)
+
+# Initiate index
+poverty_table.reset_index(drop=True, inplace=True)
+
+# Print the result
+print(poverty_table)
+
+
+# 3-5. Create a table of no_high_school_diploma (descending) by community area
+# Select necessary columns from dataframe
+education_table = data[["community_area", "community_area_name", "no_high_school_diploma"]].copy()
+
+# Drop na and arrange by descending
+education_table = education_table.dropna(subset=["no_high_school_diploma"])
+education_table = education_table.sort_values(by="no_high_school_diploma", ascending=False)
+
+# Initiate index
+education_table.reset_index(drop=True, inplace=True)
+
+# Print the result
+print(education_table)
+
+
+# 3-6. Create a table of per_capita_income (descending) by community area
+# Select necessary columns from dataframe
+income_table = data[["community_area", "community_area_name", "per_capita_income"]].copy()
+
+# Drop na and arrange by descending
+income_table = income_table.dropna(subset=["per_capita_income"])
+income_table = income_table.sort_values(by="per_capita_income", ascending=False)
+
+# Initiate index
+income_table.reset_index(drop=True, inplace=True)
+
+# Print the result
+print(income_table)
+
+
+# 3-7. Create a table of unemployment (descending) by community area
+# Select necessary columns from dataframe
+unemployment_table = data[["community_area", "community_area_name", "unemployment"]].copy()
+
+# Drop na and arrange by descending
+unemployment_table = unemployment_table.dropna(subset=["unemployment"])
+unemployment_table = unemployment_table.sort_values(by="unemployment", ascending=False)
+
+# Initiate index
+unemployment_table.reset_index(drop=True, inplace=True)
+
+# Print the result
+print(unemployment_table)
+```
+
+# Select top 10 areas in each table and converty it into a graph.
+# 3-8. Create a table of cancer_all_sites (descending) by community area
+# 3-9. Create a table of diabetes_related (descending) by community area
+# 3-10. Create a table of tuberculosis (descending) by community area
+# 3-11. Create a table of below_poverty_level (descending) by community area
+# 3-12. Create a table of no_high_school_diploma (descending) by community area
+# 3-13. Create a table of per_capita_income (descending) by community area
+# 3-14. Create a table of unemployment (descending) by community area
+
+```{python}
+# 3-8. Create a table of cancer_all_sites (descending) by community area
+# Extractn top 10 community areas
+top_10_cancer_areas = cancer_table.head(10)
+
+# Create a bar chart
+bar_chart_cancer = alt.Chart(top_10_cancer_areas).mark_bar().encode(
+    x=alt.X("cancer_all_sites:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "cancer_all_sites"]
+).properties(
+    title="Top 10 Community Areas with Highest Cancer Index",
+    width=600,
+    height=400
+)
+
+bar_chart_cancer.show()
+
+
+# 3-9. Create a table of diabetes_related (descending) by community area
+# Extractn top 10 community areas
+top_10_diabetes_areas = diabetes_table.head(10)
+
+# Create a bar chart
+bar_chart_diabetes = alt.Chart(top_10_diabetes_areas).mark_bar().encode(
+    x=alt.X("diabetes_related:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "diabetes_related"]
+).properties(
+    title="Top 10 Community Areas with Highest Diabetes Index",
+    width=600,
+    height=400
+)
+
+bar_chart_diabetes.show()
+
+
+# 3-10. Create a table of tuberculosis (descending) by community area
+# Extractn top 10 community areas
+top_10_tuberculosis_areas = tuberculosis_table.head(10)
+
+# Create a bar chart
+bar_chart_tuberculosis = alt.Chart(top_10_tuberculosis_areas).mark_bar().encode(
+    x=alt.X("tuberculosis:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "tuberculosis"]
+).properties(
+    title="Top 10 Community Areas with Highest Tuberculosis Index",
+    width=600,
+    height=400
+)
+
+bar_chart_tuberculosis.show()
+
+
+# 3-11. Create a table of below_poverty_level (descending) by community area
+# Extractn top 10 community areas
+top_10_poverty_areas = poverty_table.head(10)
+
+# Create a bar chart
+bar_chart_poverty = alt.Chart(top_10_poverty_areas).mark_bar().encode(
+    x=alt.X("below_poverty_level:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "below_poverty_level"]
+).properties(
+    title="Top 10 Community Areas with Highest Poverty Index",
+    width=600,
+    height=400
+)
+
+bar_chart_poverty.show()
+
+
+# 3-12. Create a table of no_high_school_diploma (descending) by community area
+# Extractn top 10 community areas
+top_10_education_areas = education_table.head(10)
+
+# Create a bar chart
+bar_chart_education = alt.Chart(top_10_education_areas).mark_bar().encode(
+    x=alt.X("no_high_school_diploma:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "no_high_school_diploma"]
+).properties(
+    title="Top 10 Community Areas with Highest No Education Index",
+    width=600,
+    height=400
+)
+
+bar_chart_education.show()
+
+
+# 3-13. Create a table of per_capita_income (descending) by community area
+# Extractn top 10 community areas
+top_10_income_areas = income_table.head(10)
+
+# Create a bar chart
+bar_chart_income = alt.Chart(top_10_income_areas).mark_bar().encode(
+    x=alt.X("per_capita_income:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "per_capita_income"]
+).properties(
+    title="Top 10 Community Areas with Highest Income (per capita) Index",
+    width=600,
+    height=400
+)
+
+bar_chart_income.show()
+
+
+# 3-14. Create a table of unemployment (descending) by community area
+# Extractn top 10 community areas
+top_10_unemployment_areas = unemployment_table.head(10)
+
+# Create a bar chart
+bar_chart_unemployment = alt.Chart(top_10_unemployment_areas).mark_bar().encode(
+    x=alt.X("unemployment:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "unemployment"]
+).properties(
+    title="Top 10 Community Areas with Highest Unemployment Index",
+    width=600,
+    height=400
+)
+
+bar_chart_unemployment.show()
+```
+
+![1_bar_cancer](1_bar_cancer.png)
+![2_bar_diabetes](2_bar_diabetes.png)
+![3_bar_turberculosis](3_bar_turberculosis.png)
+![4_bar_poverty](4_bar_poverty.png)
+![5_bar_education](5_bar_education.png)
+![6_bar_income](6_bar_income.png)
+![7_bar_unemployment](7_bar_unemployment.png)
+
+### Show a table with some variables and community area.
+### (This can be used in a Shiny app: Select community area > show table.)
+```{python}
+# Select necessary columns from dataframe
+variables_table = data[["community_area", "community_area_name", "cancer_all_sites", "diabetes_related", "tuberculosis", "below_poverty_level", "no_high_school_diploma", "per_capita_income", "unemployment"]].copy()
+
+# Print the result
+print(variables_table)
+```
+
+
+
+
+
+# 2. Regression
+# 2-2. Causal Relationship
+# Independent Variable (X) : below_poverty_level, no_high_school_diploma, per_capita_income, unemployment
+# Dependent Variable (Y) : cancer_all_sites, diabetes_related, tuberculosis, breast_cancer_in_females,colorectal_cancer, infant_mortality_rate, lung_cancer, prostate_cancer_in_males, stroke_cerebrovascular_disease,  
+```{python}
+import statsmodels.api as sm
+
+# 1-1. below_poverty_level ~ cancer_all_sites
+x = sm.add_constant(data["below_poverty_level"]) 
+y = data["cancer_all_sites"]                    
+model_1 = sm.OLS(y, x).fit()
+print(model_1.summary())
+
+# 1-2. no_high_school_diploma ~ cancer_all_sites
+x = sm.add_constant(data["no_high_school_diploma"]) 
+y = data["cancer_all_sites"]                    
+model_2 = sm.OLS(y, x).fit()
+print(model_2.summary())
+
+# 1-3. per_capita_income ~ cancer_all_sites
+x = sm.add_constant(data["per_capita_income"]) 
+y = data["cancer_all_sites"]                    
+model_3 = sm.OLS(y, x).fit()
+print(model_3.summary())
+
+# 1-4. unemployment ~ cancer_all_sites
+x = sm.add_constant(data["unemployment"]) 
+y = data["cancer_all_sites"]                    
+model_4 = sm.OLS(y, x).fit()
+print(model_4.summary())
+
+# 2-1. below_poverty_level ~ diabetes_related
+x = sm.add_constant(data["below_poverty_level"]) 
+y = data["diabetes_related"]                    
+model_5 = sm.OLS(y, x).fit()
+print(model_5.summary())
+
+# 2-2. no_high_school_diploma ~ diabetes_related
+x = sm.add_constant(data["no_high_school_diploma"]) 
+y = data["diabetes_related"]                    
+model_6 = sm.OLS(y, x).fit()
+print(model_6.summary())
+
+# 2-3. per_capita_income ~ diabetes_related
+x = sm.add_constant(data["per_capita_income"]) 
+y = data["diabetes_related"]                    
+model_7 = sm.OLS(y, x).fit()
+print(model_7.summary())
+
+# 2-4. unemployment ~ diabetes_related
+x = sm.add_constant(data["unemployment"]) 
+y = data["diabetes_related"]                    
+model_8 = sm.OLS(y, x).fit()
+print(model_8.summary())
+
+# 3-1. below_poverty_level ~ tuberculosis
+x = sm.add_constant(data["below_poverty_level"]) 
+y = data["tuberculosis"]                    
+model_9 = sm.OLS(y, x).fit()
+print(model_9.summary())
+
+# 3-2. no_high_school_diploma ~ tuberculosis
+x = sm.add_constant(data["no_high_school_diploma"]) 
+y = data["tuberculosis"]                    
+model_10 = sm.OLS(y, x).fit()
+print(model_10.summary())
+
+# 3-3. per_capita_income ~ tuberculosis
+x = sm.add_constant(data["per_capita_income"]) 
+y = data["tuberculosis"]                    
+model_11 = sm.OLS(y, x).fit()
+print(model_11.summary())
+
+# 3-4. unemployment ~ tuberculosis
+x = sm.add_constant(data["unemployment"]) 
+y = data["tuberculosis"]                    
+model_12 = sm.OLS(y, x).fit()
+print(model_12.summary())
+```
+# Crate plots with the analysis outcomes.
+```{python}
+import altair as alt
+
+# 1-1. below_poverty_level ~ cancer_all_sites
+
+x_var_1 = "below_poverty_level"
+y_var_1 = "cancer_all_sites"
+
+# Altair point plot
+scatter_plot_1 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_1}:Q", title="Below Poverty Level (%)"),
+    y=alt.Y(f"{y_var_1}:Q", title="Cancer (All Sites)"),
+    tooltip=[x_var_1, y_var_1]
+).properties(
+    title=f"Scatter Plot: {x_var_1} vs {y_var_1}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_1 = scatter_plot_1.transform_regression(
+    x_var_1, y_var_1, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_1 = scatter_plot_1 + trend_line_1
+
+final_chart_1
+
+
+# 1-2. no_high_school_diploma ~ cancer_all_sites
+
+x_var_2 = "no_high_school_diploma"
+y_var_2 = "cancer_all_sites"
+
+# Altair point plot
+scatter_plot_2 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_2}:Q", title="No High School Diploma"),
+    y=alt.Y(f"{y_var_2}:Q", title="Cancer (All Sites)"),
+    tooltip=[x_var_2, y_var_2]
+).properties(
+    title=f"Scatter Plot: {x_var_2} vs {y_var_2}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_2 = scatter_plot_2.transform_regression(
+    x_var_2, y_var_2, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_2 = scatter_plot_2 + trend_line_2
+
+final_chart_2
+
+
+# 1-3. per_capita_income ~ cancer_all_sites
+
+x_var_3 = "per_capita_income"
+y_var_3 = "cancer_all_sites"
+
+# Altair point plot
+scatter_plot_3 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_3}:Q", title="Per Capita Income"),
+    y=alt.Y(f"{y_var_3}:Q", title="Cancer (All Sites)"),
+    tooltip=[x_var_3, y_var_3]
+).properties(
+    title=f"Scatter Plot: {x_var_3} vs {y_var_3}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_3 = scatter_plot_3.transform_regression(
+    x_var_3, y_var_3, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_3 = scatter_plot_3 + trend_line_3
+
+final_chart_3
+
+
+# 1-4. unemployment ~ cancer_all_sites
+
+x_var_4 = "unemployment"
+y_var_4 = "cancer_all_sites"
+
+# Altair point plot
+scatter_plot_4 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_4}:Q", title="Unemployment"),
+    y=alt.Y(f"{y_var_4}:Q", title="Cancer (All Sites)"),
+    tooltip=[x_var_4, y_var_4]
+).properties(
+    title=f"Scatter Plot: {x_var_4} vs {y_var_4}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_4 = scatter_plot_4.transform_regression(
+    x_var_4, y_var_4, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_4 = scatter_plot_4 + trend_line_4
+
+final_chart_4
+
+
+# 2-1. below_poverty_level ~ diabetes_related
+
+x_var_5 = "below_poverty_level"
+y_var_5 = "diabetes_related"
+
+# Altair point plot
+scatter_plot_5 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_5}:Q", title="Below Poverty Level (%)"),
+    y=alt.Y(f"{y_var_5}:Q", title="Diabetes Related"),
+    tooltip=[x_var_5, y_var_5]
+).properties(
+    title=f"Scatter Plot: {x_var_5} vs {y_var_5}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_5 = scatter_plot_5.transform_regression(
+    x_var_5, y_var_5, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_5 = scatter_plot_5 + trend_line_5
+
+final_chart_5
+
+
+# 2-2. no_high_school_diploma ~ diabetes_related
+
+x_var_6 = "no_high_school_diploma"
+y_var_6 = "diabetes_related"
+
+# Altair point plot
+scatter_plot_6 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_6}:Q", title="No High School Diploma"),
+    y=alt.Y(f"{y_var_6}:Q", title="Diabetes Related"),
+    tooltip=[x_var_6, y_var_6]
+).properties(
+    title=f"Scatter Plot: {x_var_6} vs {y_var_6}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_6 = scatter_plot_6.transform_regression(
+    x_var_6, y_var_6, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_6 = scatter_plot_6 + trend_line_6
+
+final_chart_6
+
+
+# 2-3. per_capita_income ~ diabetes_related
+
+x_var_7 = "per_capita_income"
+y_var_7 = "diabetes_related"
+
+# Altair point plot
+scatter_plot_7 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_7}:Q", title="Per Capita Income"),
+    y=alt.Y(f"{y_var_7}:Q", title="Diabetes Related"),
+    tooltip=[x_var_7, y_var_7]
+).properties(
+    title=f"Scatter Plot: {x_var_7} vs {y_var_7}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_7 = scatter_plot_7.transform_regression(
+    x_var_7, y_var_7, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_7 = scatter_plot_7 + trend_line_7
+
+final_chart_7
+
+
+# 2-4. unemployment ~ diabetes_related
+
+x_var_8 = "unemployment"
+y_var_8 = "diabetes_related"
+
+# Altair point plot
+scatter_plot_8 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_8}:Q", title="Unemployment"),
+    y=alt.Y(f"{y_var_8}:Q", title="Diabetes Related"),
+    tooltip=[x_var_8, y_var_8]
+).properties(
+    title=f"Scatter Plot: {x_var_8} vs {y_var_8}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_8 = scatter_plot_8.transform_regression(
+    x_var_8, y_var_8, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_8 = scatter_plot_8 + trend_line_8
+
+final_chart_8
+
+
+# 3-1. below_poverty_level ~ tuberculosis
+
+x_var_9 = "below_poverty_level"
+y_var_9 = "tuberculosis"
+
+# Altair point plot
+scatter_plot_9 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_9}:Q", title="Below Poverty Level (%)"),
+    y=alt.Y(f"{y_var_9}:Q", title="Tuberculosis"),
+    tooltip=[x_var_9, y_var_9]
+).properties(
+    title=f"Scatter Plot: {x_var_9} vs {y_var_9}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_9 = scatter_plot_9.transform_regression(
+    x_var_9, y_var_9, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_9 = scatter_plot_9 + trend_line_9
+
+final_chart_9
+
+
+# 3-2. no_high_school_diploma ~ tuberculosis
+
+x_var_10 = "no_high_school_diploma"
+y_var_10 = "tuberculosis"
+
+# Altair point plot
+scatter_plot_10 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_10}:Q", title="No High School Diploma"),
+    y=alt.Y(f"{y_var_10}:Q", title="Tuberculosis"),
+    tooltip=[x_var_10, y_var_10]
+).properties(
+    title=f"Scatter Plot: {x_var_10} vs {y_var_10}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_10 = scatter_plot_10.transform_regression(
+    x_var_10, y_var_10, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_10 = scatter_plot_10 + trend_line_10
+
+final_chart_10
+
+
+# 3-3. per_capita_income ~ tuberculosis
+
+x_var_11 = "per_capita_income"
+y_var_11 = "tuberculosis"
+
+# Altair point plot
+scatter_plot_11 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_11}:Q", title="Per Capita Income"),
+    y=alt.Y(f"{y_var_11}:Q", title="Tuberculosis"),
+    tooltip=[x_var_11, y_var_11]
+).properties(
+    title=f"Scatter Plot: {x_var_11} vs {y_var_11}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_11 = scatter_plot_11.transform_regression(
+    x_var_11, y_var_11, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_11 = scatter_plot_11 + trend_line_11
+
+final_chart_11
+
+
+# 3-4. unemployment ~ tuberculosis
+
+x_var_12 = "unemployment"
+y_var_12 = "tuberculosis"
+
+# Altair point plot
+scatter_plot_12 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_12}:Q", title="Unemployment"),
+    y=alt.Y(f"{y_var_12}:Q", title="Tuberculosis"),
+    tooltip=[x_var_12, y_var_12]
+).properties(
+    title=f"Scatter Plot: {x_var_12} vs {y_var_12}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_12 = scatter_plot_12.transform_regression(
+    x_var_12, y_var_12, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_12 = scatter_plot_12 + trend_line_12
+
+final_chart_12
+```
+![1-1_cancer-poverty](1-1_cancer-poverty.png)
+![1-2_cancer-income](1-2_cancer-income.png)
+![1-3._cancer-unemployment](1-3._cancer-unemployment.png)
+![2-1_diabetes-poverty](2-1_diabetes-poverty.png)
+![2-2_diabetes-income](2-2_diabetes-income.png)
+![2-3_diabetes-unemployment](2-3_diabetes-unemployment.png)
+![1-1_cancer-poverty](1-1_cancer-poverty.png)
+![1-2_cancer-income](1-2_cancer-income.png)
+![1-3._cancer-unemployment](1-3._cancer-unemployment.png)
+![3-1_tuberculosis-poverty](3-1_tuberculosis-poverty.png)
+![3-2_tuberculosis-education](3-2_tuberculosis-education.png)
+![3-3_tuberculosis-income](3-3_tuberculosis-income.png)
+
+# 3. Text Analysis
+# url: https://www.cbsnews.com/chicago/news/cancer-care-disparities-1/
+# Subject: Chicago's South, West Sides have many more cancer patients, less access to care.
+# Scrape the article content
+```{python}
+import requests
+from bs4 import BeautifulSoup
+
+# URL
+url = 'https://www.cbsnews.com/chicago/news/cancer-care-disparities-1/'
+
+# Load the web page
+response = requests.get(url)
+response.raise_for_status()  # Check if the request is successful
+
+# HTML parsing
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# 기사 본문 추출 (예: <div> 태그의 클래스명이 'content'인 경우)
+article_section = soup.find('section', class_='content__body')
+if article_section:
+    paragraphs = article_section.find_all('p')
+    article_text = '\n'.join([para.get_text() for para in paragraphs])
+    print(article_text)
+else:
+    print("Article is not found.")
+```
+# Text Analysis - semtimental
+```{python}
+from textblob import TextBlob
+
+# Create textblob
+blob = TextBlob(article_text)
+
+# Sentiment Analysis
+sentiment = blob.sentiment
+polarity = sentiment.polarity  # -1(negative) +1(oisitive)
+subjectivity = sentiment.subjectivity  # 0(objective) 1(subjective)
+
+print(f"Polarity: {polarity}")  # 0.10 (slightly positive)
+print(f"Subjectivity: {subjectivity}")  # 0.38 (relatively objective)
+```
+# Text Analysis - semtimental by sentence
+```{python}
+import spacy
+nlp = spacy.load("en_core_web_sm")
+
+doc = nlp(article_text)
+type(doc)
+
+sents = list(doc.sents)
+sents_list = list(doc.sents)
+sents_list
+
+for token in sents_list[1]:
+    print(token.text)
+```
+```{python}
+from textblob import TextBlob
+import pandas as pd
+import altair as alt
+
+# Calculate setence polarity
+sentence_polarities = []
+for i, sentence in enumerate(sents_list):
+    blob = TextBlob(sentence.text)
+    polarity = blob.sentiment.polarity
+    sentence_polarities.append({"n": i + 1, "sentence": sentence.text, "polarity": polarity})
+
+# Create a DataFrame
+df_polarity = pd.DataFrame(sentence_polarities)
+
+# Print the outcome
+print(df_polarity)
+```
+```{python}
+# Create a graph about polarity by sentence
+chart_polarity = alt.Chart(df_polarity).mark_line().encode(
+    x=alt.X('n:Q', title='Sentence Number'),
+    y=alt.Y('polarity:Q', title='Polarity'),
+    tooltip=['sentence', 'polarity']
+).properties(
+    title='Sentence Polarity of Article',
+    width=800,
+    height=400
+).interactive()
+
+chart_polarity
+```
+# Text Analysis - semtimental by vocabulary
+```{python}
+from collections import Counter
+import pandas as pd
+import altair as alt
+import spacy
+
+# Load spaCy model
+nlp = spacy.load("en_core_web_sm")
+
+# Define custom stopwords
+custom_stopwords = {"said", "jones", "riggins", "thomas", "sinclair"}
+
+# Add custom stopwords to the basic stopwords in spaCy
+all_stopwords = nlp.Defaults.stop_words.union(custom_stopwords)
+
+# Remove stopwords and extract words
+words = [
+    token.text.lower()
+    for sentence in sents_list
+    for token in sentence
+    if token.is_alpha and token.text.lower() not in all_stopwords
+]
+
+# Calculate words frequency
+word_freq = Counter(words)
+
+# Extract top 10 words
+most_common_words = word_freq.most_common(10)
+df_word_freq = pd.DataFrame(most_common_words, columns=["word", "frequency"])
+
+# Print the outcome
+print(df_word_freq)
+```
+```{python}
+# Create a bar graph
+chart_word_frequency = alt.Chart(df_word_freq).mark_bar().encode(
+    x=alt.X("frequency:Q", title="Frequency"),
+    y=alt.Y("word:N", sort="-x", title="Word"),
+    tooltip=["word", "frequency"]
+).properties(
+    title="Top 10 Most Frequent Words (Excluding All Stopwords)",
+    width=600,
+    height=400
+)
+
+chart_word_frequency
+```
+![chart_polarity](chart_polarity.png)
+![chart_word_frequency](chart_word_frequency.png)
