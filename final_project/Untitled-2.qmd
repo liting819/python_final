@@ -1,0 +1,225 @@
+---
+title: "Document Title"
+author: "Your Name"
+format: html
+---
+
+### Reading Public Health Services- Chicago Primary Care Community Health Centers Maps
+
+```{python}
+import geopandas as gpd
+import pandas as pd
+from shapely.geometry import Point
+
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+```
+
+```{python}
+
+filepath = "/Users/tsaili-ting/Uchicago/Year2/Y2Fall/Python2/final_project/Map_-_Public_Health_Services_-_Chicago_Primary_Care_Community_Health_Centers.csv"
+map = gpd.read_file(filepath)
+```
+
+
+```{python}
+
+# Clean the dataset and make it a geo dataframe
+df = pd.DataFrame(map)
+
+# Extract Coordinates
+df[['address', 'coordinates']] = df['Address'].str.extract(r'^(.*)\n\((.*)\)$')
+df[['latitude', 'longitude']] = df['coordinates'].str.split(', ', expand=True)
+
+# Convert Latitude and Longitude to Numeric
+df['latitude'] = pd.to_numeric(df['latitude'])
+df['longitude'] = pd.to_numeric(df['longitude'])
+
+# Create Geometry Column
+df['geometry'] = df.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
+
+# Convert to GeoDataFrame
+gdf = gpd.GeoDataFrame(df, geometry='geometry')
+
+# Drop unnecessary columns if desired
+gdf = gdf.drop(columns=['Address', 'coordinates'])
+
+# Display the GeoDataFrame
+gdf.head()
+```
+
+
+```{python}
+# Filter GeoDataFrame to keep points within Chicago's bounding box
+point = gdf[
+    (gdf['latitude'] >= 41.64) & (gdf['latitude'] <= 42.02) &
+    (gdf['longitude'] >= -87.94) & (gdf['longitude'] <= -87.52)
+]
+point.to_file("point.geojson", driver="GeoJSON")
+
+```
+
+
+```{python}
+# Plot only the points in Chicago
+point.plot(marker='o', color='green', markersize=5, figsize=(10, 10))
+plt.title("Map of Locations in Chicago")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.grid(True)
+plt.show()
+```
+
+
+```{python}
+# layering with chicago community shape file 
+
+chi_shp = gpd.read_file("/Users/tsaili-ting/Uchicago/Year2/Y2Fall/GIS/Final project/chicomm/chicomm.shp")
+```
+
+```{python}
+point = point.set_crs(epsg=4326)
+point = point.to_crs(epsg=32616)
+chi_shp = chi_shp.to_crs(epsg=32616)
+```
+
+### Base Map with the points
+```{python}
+
+# Create a base map with the shapefile
+ax = chi_shp.plot(color='lightgrey', edgecolor='black', figsize=(10, 10), alpha=0.5)
+
+# Overlay the points on the map
+point.plot(ax=ax, marker='o', color='red', markersize=10)
+
+# Add a title and labels
+plt.title("Chicago Map with Points")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.show()
+```
+
+### Highlight the area with the health centers
+```{python}
+# highlight the area that has Chicago Primary Care Community Health Centers
+# Perform spatial join
+highlighted_areas = chi_shp.sjoin(point, how='inner', predicate='intersects')
+
+# Keep only unique community areas
+highlighted_areas = highlighted_areas.drop_duplicates(subset=chi_shp.geometry.name)
+```
+
+```{python}
+# Add a highlight flag
+chi_shp["has_points"] = chi_shp.geometry.apply(lambda geom: geom in highlighted_areas.geometry.values)
+```
+
+```{python}
+# Plot shapefile, highlighting areas with points
+custom_cmap = ListedColormap(["yellow", "lightgrey"])
+ax = chi_shp.plot(
+    column="has_points", 
+    cmap=custom_cmap,  # Colors: cool areas without points, warm areas with points
+    edgecolor="grey",
+    figsize=(12, 12),
+    legend=True
+)
+
+# Add the points to the map
+point.plot(ax=ax, marker='o', color='red', markersize=5, label="Points")
+
+# Add labels and title
+plt.title("Highlighted Community Areas with Points")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.legend()
+plt.show()
+```
+
+### Combined Demographic and Health outcome data 
+
+```{python}
+# Spatial join demographic data
+chi_dem = pd.read_csv("Public_Health_Statistics_-_Selected_public_health_indicators_by_Chicago_community_area_-_Historical_20241125.csv")
+
+# fix the wrong community name 
+chi_dem["Community Area Name"] = chi_dem["Community Area Name"].replace(
+    {"Montclaire": "Montclare"}
+)
+
+# Merge shp with the demographic dataset
+chi_shp_dem = chi_shp.merge(chi_dem, left_on="DISTITLE",right_on = "Community Area Name", how="outer")
+chi_shp_dem = chi_shp_dem.to_crs(epsg=32616)
+
+```
+
+#### Look at the color map in income, education, poverty rate, and health outcome
+
+```{python}
+columns = ['Cancer (All Sites)','Diabetes-related', 'Below Poverty Level','No High School Diploma', 'Per Capita Income', 'Unemployment']
+
+for col in columns:
+    fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+    chi_shp_dem.plot(
+        column=col, 
+        legend=True, 
+        ax=ax
+    )
+    ax.set_title(col)  # Set the title for the plot
+    plt.show()
+
+```
+
+### Look at the 1 mile buffer for the primary care center 
+
+```{python}
+# create the 1 mile buffer 
+point["buffer"] = point.geometry.buffer(1609)
+buffers = gpd.GeoDataFrame(point, geometry="buffer", crs=point.crs)
+```
+
+#### Look at 1 mile buffer with health outcome 
+
+#### Cancer Rate in Community Area 
+```{python}
+fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+chi_shp_dem.plot(ax=ax, column="Cancer (All Sites)", cmap="Reds", edgecolor="lightgrey",legend=True, label="Cancer Rates")
+buffers.plot(ax=ax, color="blue", alpha=0.2, edgecolor="None")
+
+plt.title(" 1 Mile Buffers and Cancer Rates in Community Areas")
+plt.legend()
+plt.show()
+```
+
+#### Diabetes rate in Community Area 
+```{python}
+fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+chi_shp_dem.plot(ax=ax, column="Diabetes-related", cmap="Blues", edgecolor="lightgrey",legend=True, label="Diabetes Rates")
+buffers.plot(ax=ax, color="blue", alpha=0.2, edgecolor="None")
+
+plt.title(" 1 Mile Buffers and Diabetes in Community Areas")
+plt.legend()
+plt.show()
+```
+
+#### Below Poverty Level in Community Area 
+```{python}
+fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+chi_shp_dem.plot(ax=ax, column="Below Poverty Level", cmap="Greens", edgecolor="lightgrey",legend=True, label="Below Poverty Level")
+buffers.plot(ax=ax, color="blue", alpha=0.2, edgecolor="None")
+
+plt.title(" 1 Mile Buffers and Below Poverty Levelin Community Areas")
+plt.legend()
+plt.show()
+```
+
+```{python}
+chi_shp_dem.to_file("chi_shp_dem.geojson", driver="GeoJSON")
+
+```
+
+```{python}
+df = gpd.read_file("/Users/tsaili-ting/Uchicago/Year2/Y2Fall/Python2/final_project/chi_shp_dem.geojson")
+print("Column Names:", df.columns)  # Debugging: Print column names
+       
+```
