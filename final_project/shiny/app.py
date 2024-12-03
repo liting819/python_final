@@ -12,7 +12,7 @@ app_ui = ui.page_fluid(
     ),
     ui.input_checkbox(
         id="show_buffer",
-        label="Show Buffer Layer",
+        label="Show Buffer Layer for ",
         value=False  # Default: Buffer layer off
     ),
     ui.input_slider(
@@ -113,7 +113,7 @@ def server(input, output, session):
         return (
             df[["Community Area Name", input.attribute.get()]]
             .reset_index(drop=True)
-            .sort_values(by=input.attribute.get(), ascending=True)
+            .sort_values(by=input.attribute.get(), ascending=False)
         )
 
 # App
