@@ -163,7 +163,8 @@ for col in columns:
     chi_shp_dem.plot(
         column=col, 
         legend=True, 
-        ax=ax
+        ax=ax,
+        cmap="Blues"
     )
     ax.set_title(col)  # Set the title for the plot
     plt.show()

@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="reading-public-health-services--chicago-primary-care-community-health-centers-maps" class="level3">
 <h3 class="anchored" data-anchor-id="reading-public-health-services--chicago-primary-care-community-health-centers-maps">Reading Public Health Services- Chicago Primary Care Community Health Centers Maps</h3>
-<div id="6831b8d5" class="cell" data-execution_count="1">
+<div id="1c5e3858" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> Point</span>
@@ -116,11 +116,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> ListedColormap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="6a2ad993" class="cell" data-execution_count="2">
+<div id="3e118587" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>filepath <span class="op">=</span> <span class="st">"/Users/tsaili-ting/Uchicago/Year2/Y2Fall/Python2/final_project/Map_-_Public_Health_Services_-_Chicago_Primary_Care_Community_Health_Centers.csv"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">map</span> <span class="op">=</span> gpd.read_file(filepath)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="de5a7675" class="cell" data-execution_count="3">
+<div id="0e0e2a3f" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean the dataset and make it a geo dataframe</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(<span class="bu">map</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -223,21 +223,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="4e618a74" class="cell" data-execution_count="4">
+<div id="7d239c8b" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter GeoDataFrame to keep points within Chicago's bounding box</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> gdf[</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    (gdf[<span class="st">'latitude'</span>] <span class="op">&gt;=</span> <span class="fl">41.64</span>) <span class="op">&amp;</span> (gdf[<span class="st">'latitude'</span>] <span class="op">&lt;=</span> <span class="fl">42.02</span>) <span class="op">&amp;</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    (gdf[<span class="st">'longitude'</span>] <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">87.94</span>) <span class="op">&amp;</span> (gdf[<span class="st">'longitude'</span>] <span class="op">&lt;=</span> <span class="op">-</span><span class="fl">87.52</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>point.to_file(<span class="st">"point.geojson"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/tsaili-ting/.local/lib/python3.12/site-packages/pyogrio/geopandas.py:662: UserWarning: 'crs' was not provided.  The output dataset will not have projection information defined and may not be usable in other systems.
+  write(</code></pre>
 </div>
-<div id="f25d592e" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot only the points in Chicago</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>point.plot(marker<span class="op">=</span><span class="st">'o'</span>, color<span class="op">=</span><span class="st">'green'</span>, markersize<span class="op">=</span><span class="dv">5</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Map of Locations in Chicago"</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude"</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="b32bc01e" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot only the points in Chicago</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>point.plot(marker<span class="op">=</span><span class="st">'o'</span>, color<span class="op">=</span><span class="st">'green'</span>, markersize<span class="op">=</span><span class="dv">5</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Map of Locations in Chicago"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -246,31 +251,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="53b332c9" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># layering with chicago community shape file </span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>chi_shp <span class="op">=</span> gpd.read_file(<span class="st">"/Users/tsaili-ting/Uchicago/Year2/Y2Fall/GIS/Final project/chicomm/chicomm.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="a25e4b3d" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># layering with chicago community shape file </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>chi_shp <span class="op">=</span> gpd.read_file(<span class="st">"/Users/tsaili-ting/Uchicago/Year2/Y2Fall/GIS/Final project/chicomm/chicomm.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="57a67dcc" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> point.set_crs(epsg<span class="op">=</span><span class="dv">4326</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> point.to_crs(epsg<span class="op">=</span><span class="dv">32616</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>chi_shp <span class="op">=</span> chi_shp.to_crs(epsg<span class="op">=</span><span class="dv">32616</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fe87b496" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> point.set_crs(epsg<span class="op">=</span><span class="dv">4326</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> point.to_crs(epsg<span class="op">=</span><span class="dv">32616</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>chi_shp <span class="op">=</span> chi_shp.to_crs(epsg<span class="op">=</span><span class="dv">32616</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="base-map-with-the-points" class="level3">
 <h3 class="anchored" data-anchor-id="base-map-with-the-points">Base Map with the points</h3>
-<div id="a8e69e2d" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a base map with the shapefile</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> chi_shp.plot(color<span class="op">=</span><span class="st">'lightgrey'</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>), alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay the points on the map</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>point.plot(ax<span class="op">=</span>ax, marker<span class="op">=</span><span class="st">'o'</span>, color<span class="op">=</span><span class="st">'red'</span>, markersize<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a title and labels</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Chicago Map with Points"</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude"</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude"</span>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="57afa897" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a base map with the shapefile</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> chi_shp.plot(color<span class="op">=</span><span class="st">'lightgrey'</span>, edgecolor<span class="op">=</span><span class="st">'black'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>), alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay the points on the map</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>point.plot(ax<span class="op">=</span>ax, marker<span class="op">=</span><span class="st">'o'</span>, color<span class="op">=</span><span class="st">'red'</span>, markersize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a title and labels</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Chicago Map with Points"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -282,38 +287,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="highlight-the-area-with-the-health-centers" class="level3">
 <h3 class="anchored" data-anchor-id="highlight-the-area-with-the-health-centers">Highlight the area with the health centers</h3>
-<div id="bfb20295" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># highlight the area that has Chicago Primary Care Community Health Centers</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform spatial join</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>highlighted_areas <span class="op">=</span> chi_shp.sjoin(point, how<span class="op">=</span><span class="st">'inner'</span>, predicate<span class="op">=</span><span class="st">'intersects'</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only unique community areas</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>highlighted_areas <span class="op">=</span> highlighted_areas.drop_duplicates(subset<span class="op">=</span>chi_shp.geometry.name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fab9ae9e" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># highlight the area that has Chicago Primary Care Community Health Centers</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform spatial join</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>highlighted_areas <span class="op">=</span> chi_shp.sjoin(point, how<span class="op">=</span><span class="st">'inner'</span>, predicate<span class="op">=</span><span class="st">'intersects'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep only unique community areas</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>highlighted_areas <span class="op">=</span> highlighted_areas.drop_duplicates(subset<span class="op">=</span>chi_shp.geometry.name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="1f68b625" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a highlight flag</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>chi_shp[<span class="st">"has_points"</span>] <span class="op">=</span> chi_shp.geometry.<span class="bu">apply</span>(<span class="kw">lambda</span> geom: geom <span class="kw">in</span> highlighted_areas.geometry.values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="71b69ab7" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a highlight flag</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>chi_shp[<span class="st">"has_points"</span>] <span class="op">=</span> chi_shp.geometry.<span class="bu">apply</span>(<span class="kw">lambda</span> geom: geom <span class="kw">in</span> highlighted_areas.geometry.values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="40cd2fee" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot shapefile, highlighting areas with points</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>custom_cmap <span class="op">=</span> ListedColormap([<span class="st">"yellow"</span>, <span class="st">"lightgrey"</span>])</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> chi_shp.plot(</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"has_points"</span>, </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span>custom_cmap,  <span class="co"># Colors: cool areas without points, warm areas with points</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    edgecolor<span class="op">=</span><span class="st">"grey"</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">12</span>),</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="va">True</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the points to the map</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>point.plot(ax<span class="op">=</span>ax, marker<span class="op">=</span><span class="st">'o'</span>, color<span class="op">=</span><span class="st">'red'</span>, markersize<span class="op">=</span><span class="dv">5</span>, label<span class="op">=</span><span class="st">"Points"</span>)</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Add labels and title</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Highlighted Community Areas with Points"</span>)</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude"</span>)</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude"</span>)</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="11619e0e" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot shapefile, highlighting areas with points</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>custom_cmap <span class="op">=</span> ListedColormap([<span class="st">"yellow"</span>, <span class="st">"lightgrey"</span>])</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> chi_shp.plot(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"has_points"</span>, </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span>custom_cmap,  <span class="co"># Colors: cool areas without points, warm areas with points</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    edgecolor<span class="op">=</span><span class="st">"grey"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">12</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="va">True</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the points to the map</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>point.plot(ax<span class="op">=</span>ax, marker<span class="op">=</span><span class="st">'o'</span>, color<span class="op">=</span><span class="st">'red'</span>, markersize<span class="op">=</span><span class="dv">5</span>, label<span class="op">=</span><span class="st">"Points"</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Add labels and title</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Highlighted Community Areas with Points"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude"</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -325,33 +330,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="combined-demographic-and-health-outcome-data" class="level3">
 <h3 class="anchored" data-anchor-id="combined-demographic-and-health-outcome-data">Combined Demographic and Health outcome data</h3>
-<div id="b85da5fd" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Spatial join demographic data</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>chi_dem <span class="op">=</span> pd.read_csv(<span class="st">"Public_Health_Statistics_-_Selected_public_health_indicators_by_Chicago_community_area_-_Historical_20241125.csv"</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fix the wrong community name </span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>chi_dem[<span class="st">"Community Area Name"</span>] <span class="op">=</span> chi_dem[<span class="st">"Community Area Name"</span>].replace(</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"Montclaire"</span>: <span class="st">"Montclare"</span>}</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge shp with the demographic dataset</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>chi_shp_dem <span class="op">=</span> chi_shp.merge(chi_dem, left_on<span class="op">=</span><span class="st">"DISTITLE"</span>,right_on <span class="op">=</span> <span class="st">"Community Area Name"</span>, how<span class="op">=</span><span class="st">"outer"</span>)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>chi_shp_dem <span class="op">=</span> chi_shp_dem.to_crs(epsg<span class="op">=</span><span class="dv">32616</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="dab2318b" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Spatial join demographic data</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>chi_dem <span class="op">=</span> pd.read_csv(<span class="st">"Public_Health_Statistics_-_Selected_public_health_indicators_by_Chicago_community_area_-_Historical_20241125.csv"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fix the wrong community name </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>chi_dem[<span class="st">"Community Area Name"</span>] <span class="op">=</span> chi_dem[<span class="st">"Community Area Name"</span>].replace(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"Montclaire"</span>: <span class="st">"Montclare"</span>}</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge shp with the demographic dataset</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>chi_shp_dem <span class="op">=</span> chi_shp.merge(chi_dem, left_on<span class="op">=</span><span class="st">"DISTITLE"</span>,right_on <span class="op">=</span> <span class="st">"Community Area Name"</span>, how<span class="op">=</span><span class="st">"outer"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>chi_shp_dem <span class="op">=</span> chi_shp_dem.to_crs(epsg<span class="op">=</span><span class="dv">32616</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="look-at-the-color-map-in-income-education-poverty-rate-and-health-outcome" class="level4">
 <h4 class="anchored" data-anchor-id="look-at-the-color-map-in-income-education-poverty-rate-and-health-outcome">Look at the color map in income, education, poverty rate, and health outcome</h4>
-<div id="a4a653ab" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>columns <span class="op">=</span> [<span class="st">'Cancer (All Sites)'</span>,<span class="st">'Diabetes-related'</span>, <span class="st">'Below Poverty Level'</span>,<span class="st">'No High School Diploma'</span>, <span class="st">'Per Capita Income'</span>, <span class="st">'Unemployment'</span>]</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> columns:</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    chi_shp_dem.plot(</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        column<span class="op">=</span>col, </span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        legend<span class="op">=</span><span class="va">True</span>, </span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        ax<span class="op">=</span>ax</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    ax.set_title(col)  <span class="co"># Set the title for the plot</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="bb61a4e0" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>columns <span class="op">=</span> [<span class="st">'Cancer (All Sites)'</span>,<span class="st">'Diabetes-related'</span>, <span class="st">'Below Poverty Level'</span>,<span class="st">'No High School Diploma'</span>, <span class="st">'Per Capita Income'</span>, <span class="st">'Unemployment'</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> columns:</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    chi_shp_dem.plot(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        column<span class="op">=</span>col, </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        legend<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        ax<span class="op">=</span>ax,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        cmap<span class="op">=</span><span class="st">"Blues"</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    ax.set_title(col)  <span class="co"># Set the title for the plot</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -399,29 +405,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="look-at-the-1-mile-buffer-for-the-primary-care-center" class="level3">
 <h3 class="anchored" data-anchor-id="look-at-the-1-mile-buffer-for-the-primary-care-center">Look at the 1 mile buffer for the primary care center</h3>
-<div id="191cf937" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the 1 mile buffer </span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>point[<span class="st">"buffer"</span>] <span class="op">=</span> point.geometry.<span class="bu">buffer</span>(<span class="dv">1609</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>buffers <span class="op">=</span> gpd.GeoDataFrame(point, geometry<span class="op">=</span><span class="st">"buffer"</span>, crs<span class="op">=</span>point.crs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="f399860e" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the 1 mile buffer </span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>point[<span class="st">"buffer"</span>] <span class="op">=</span> point.geometry.<span class="bu">buffer</span>(<span class="dv">1609</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>buffers <span class="op">=</span> gpd.GeoDataFrame(point, geometry<span class="op">=</span><span class="st">"buffer"</span>, crs<span class="op">=</span>point.crs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="look-at-1-mile-buffer-with-health-outcome" class="level4">
 <h4 class="anchored" data-anchor-id="look-at-1-mile-buffer-with-health-outcome">Look at 1 mile buffer with health outcome</h4>
 </section>
 <section id="cancer-rate-in-community-area" class="level4">
 <h4 class="anchored" data-anchor-id="cancer-rate-in-community-area">Cancer Rate in Community Area</h4>
-<div id="5e45df8f" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>chi_shp_dem.plot(ax<span class="op">=</span>ax, column<span class="op">=</span><span class="st">"Cancer (All Sites)"</span>, cmap<span class="op">=</span><span class="st">"Reds"</span>, edgecolor<span class="op">=</span><span class="st">"lightgrey"</span>,legend<span class="op">=</span><span class="va">True</span>, label<span class="op">=</span><span class="st">"Cancer Rates"</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>buffers.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, edgecolor<span class="op">=</span><span class="st">"None"</span>)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">" 1 Mile Buffers and Cancer Rates in Community Areas"</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="dfa85ea2" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>chi_shp_dem.plot(ax<span class="op">=</span>ax, column<span class="op">=</span><span class="st">"Cancer (All Sites)"</span>, cmap<span class="op">=</span><span class="st">"Reds"</span>, edgecolor<span class="op">=</span><span class="st">"lightgrey"</span>,legend<span class="op">=</span><span class="va">True</span>, label<span class="op">=</span><span class="st">"Cancer Rates"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>buffers.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, edgecolor<span class="op">=</span><span class="st">"None"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">" 1 Mile Buffers and Cancer Rates in Community Areas"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_45914/3426493884.py:6: UserWarning: Legend does not support handles for PatchCollection instances.
+<pre><code>/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_90196/3426493884.py:6: UserWarning: Legend does not support handles for PatchCollection instances.
 See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#implementing-a-custom-legend-handler
   plt.legend()
-/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_45914/3426493884.py:6: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_90196/3426493884.py:6: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
   plt.legend()</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -435,19 +441,19 @@ See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#impl
 </section>
 <section id="diabetes-rate-in-community-area" class="level4">
 <h4 class="anchored" data-anchor-id="diabetes-rate-in-community-area">Diabetes rate in Community Area</h4>
-<div id="669506b0" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>chi_shp_dem.plot(ax<span class="op">=</span>ax, column<span class="op">=</span><span class="st">"Diabetes-related"</span>, cmap<span class="op">=</span><span class="st">"Blues"</span>, edgecolor<span class="op">=</span><span class="st">"lightgrey"</span>,legend<span class="op">=</span><span class="va">True</span>, label<span class="op">=</span><span class="st">"Diabetes Rates"</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>buffers.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, edgecolor<span class="op">=</span><span class="st">"None"</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">" 1 Mile Buffers and Diabetes in Community Areas"</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="91f09325" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>chi_shp_dem.plot(ax<span class="op">=</span>ax, column<span class="op">=</span><span class="st">"Diabetes-related"</span>, cmap<span class="op">=</span><span class="st">"Blues"</span>, edgecolor<span class="op">=</span><span class="st">"lightgrey"</span>,legend<span class="op">=</span><span class="va">True</span>, label<span class="op">=</span><span class="st">"Diabetes Rates"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>buffers.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, edgecolor<span class="op">=</span><span class="st">"None"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">" 1 Mile Buffers and Diabetes in Community Areas"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_45914/1093011981.py:6: UserWarning: Legend does not support handles for PatchCollection instances.
+<pre><code>/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_90196/1093011981.py:6: UserWarning: Legend does not support handles for PatchCollection instances.
 See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#implementing-a-custom-legend-handler
   plt.legend()
-/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_45914/1093011981.py:6: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_90196/1093011981.py:6: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
   plt.legend()</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -461,19 +467,19 @@ See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#impl
 </section>
 <section id="below-poverty-level-in-community-area" class="level4">
 <h4 class="anchored" data-anchor-id="below-poverty-level-in-community-area">Below Poverty Level in Community Area</h4>
-<div id="6cba058c" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>chi_shp_dem.plot(ax<span class="op">=</span>ax, column<span class="op">=</span><span class="st">"Below Poverty Level"</span>, cmap<span class="op">=</span><span class="st">"Greens"</span>, edgecolor<span class="op">=</span><span class="st">"lightgrey"</span>,legend<span class="op">=</span><span class="va">True</span>, label<span class="op">=</span><span class="st">"Below Poverty Level"</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>buffers.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, edgecolor<span class="op">=</span><span class="st">"None"</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">" 1 Mile Buffers and Below Poverty Levelin Community Areas"</span>)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="e0203bce" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>chi_shp_dem.plot(ax<span class="op">=</span>ax, column<span class="op">=</span><span class="st">"Below Poverty Level"</span>, cmap<span class="op">=</span><span class="st">"Greens"</span>, edgecolor<span class="op">=</span><span class="st">"lightgrey"</span>,legend<span class="op">=</span><span class="va">True</span>, label<span class="op">=</span><span class="st">"Below Poverty Level"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>buffers.plot(ax<span class="op">=</span>ax, color<span class="op">=</span><span class="st">"blue"</span>, alpha<span class="op">=</span><span class="fl">0.2</span>, edgecolor<span class="op">=</span><span class="st">"None"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">" 1 Mile Buffers and Below Poverty Levelin Community Areas"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_45914/1547493664.py:6: UserWarning: Legend does not support handles for PatchCollection instances.
+<pre><code>/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_90196/1547493664.py:6: UserWarning: Legend does not support handles for PatchCollection instances.
 See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#implementing-a-custom-legend-handler
   plt.legend()
-/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_45914/1547493664.py:6: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+/var/folders/xp/13j7_6qs0bjcjm3r53h36v0h0000gn/T/ipykernel_90196/1547493664.py:6: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
   plt.legend()</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -482,6 +488,30 @@ See: https://matplotlib.org/stable/tutorials/intermediate/legend_guide.html#impl
 <p><img src="Untitled-2_files/figure-html/cell-18-output-2.png" width="498" height="445" class="figure-img"></p>
 </figure>
 </div>
+</div>
+</div>
+<div id="f3d015e0" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>chi_shp_dem.to_file(<span class="st">"chi_shp_dem.geojson"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cbadff9d" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> gpd.read_file(<span class="st">"/Users/tsaili-ting/Uchicago/Year2/Y2Fall/Python2/final_project/chi_shp_dem.geojson"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Column Names:"</span>, df.columns)  <span class="co"># Debugging: Print column names</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Column Names: Index(['CHICOMNO', 'DISTNAME', 'DISTITLE', 'FAMINC', 'HOUSINC', 'PERCAPINC',
+       'MEDVALOOH', 'MEDRENT', 'has_points', 'Community Area',
+       'Community Area Name', 'Birth Rate', 'General Fertility Rate',
+       'Low Birth Weight', 'Prenatal Care Beginning in First Trimester',
+       'Preterm Births', 'Teen Birth Rate', 'Assault (Homicide)',
+       'Breast cancer in females', 'Cancer (All Sites)', 'Colorectal Cancer',
+       'Diabetes-related', 'Firearm-related', 'Infant Mortality Rate',
+       'Lung Cancer', 'Prostate Cancer in Males',
+       'Stroke (Cerebrovascular Disease)',
+       'Childhood Blood Lead Level Screening', 'Childhood Lead Poisoning',
+       'Gonorrhea in Females', 'Gonorrhea in Males', 'Tuberculosis',
+       'Below Poverty Level', 'Crowded Housing', 'Dependency',
+       'No High School Diploma', 'Per Capita Income', 'Unemployment',
+       'geometry'],
+      dtype='object')</code></pre>
 </div>
 </div>
 </section>
