@@ -102,20 +102,20 @@ plt.show()
 ### Highlight the area with the health centers
 ```{python}
 # highlight the area that has Chicago Primary Care Community Health Centers
-# Perform spatial join
+# spatial join
 highlighted_areas = chi_shp.sjoin(point, how='inner', predicate='intersects')
 
-# Keep only unique community areas
+# keep only unique community areas
 highlighted_areas = highlighted_areas.drop_duplicates(subset=chi_shp.geometry.name)
 ```
 
 ```{python}
-# Add a highlight flag
+# add a highlight flag
 chi_shp["has_points"] = chi_shp.geometry.apply(lambda geom: geom in highlighted_areas.geometry.values)
 ```
 
 ```{python}
-# Plot shapefile, highlighting areas with points
+# plot shapefile, highlighting areas with points
 custom_cmap = ListedColormap(["yellow", "lightgrey"])
 ax = chi_shp.plot(
     column="has_points", 
@@ -125,10 +125,10 @@ ax = chi_shp.plot(
     legend=True
 )
 
-# Add the points to the map
+# add the points to the map
 point.plot(ax=ax, marker='o', color='red', markersize=5, label="Points")
 
-# Add labels and title
+# add labels and title
 plt.title("Highlighted Community Areas with Points")
 plt.xlabel("Longitude")
 plt.ylabel("Latitude")
@@ -139,7 +139,7 @@ plt.show()
 ### Combined Demographic and Health outcome data 
 
 ```{python}
-# Spatial join demographic data
+# spatial join demographic data
 chi_dem = pd.read_csv("Public_Health_Statistics_-_Selected_public_health_indicators_by_Chicago_community_area_-_Historical_20241125.csv")
 
 # fix the wrong community name 

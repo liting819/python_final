@@ -12,7 +12,7 @@ app_ui = ui.page_fluid(
     ),
     ui.input_checkbox(
         id="show_buffer",
-        label="Show Buffer Layer for ",
+        label="Show Buffer Layer for Community Health Center ",
         value=False  # Default: Buffer layer off
     ),
     ui.input_slider(
