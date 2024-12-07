@@ -1,0 +1,780 @@
+---
+title: "Relationship Between Socioeconomic Indicators and Health outcomes 
+in Chicago "
+author: "Ting Tsai & Sohyun Lim"
+format: html
+execute:
+  echo: false
+  eval: false
+
+---
+```{python}
+import geopandas as gpd
+import pandas as pd
+from shapely.geometry import Point
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+import requests
+from bs4 import BeautifulSoup
+from textblob import TextBlob
+import spacy
+import altair as alt
+from collections import Counter
+import statsmodels.api as sm
+import statsmodels.api as sm
+```
+
+# 1. Text Analysis
+url: https://www.cbsnews.com/chicago/news/cancer-care-disparities-1/
+Subject: Chicago's South, West Sides have many more cancer patients, less access to care.
+### Scrape the article content
+```{python}
+# URL
+url = 'https://www.cbsnews.com/chicago/news/cancer-care-disparities-1/'
+
+# Load the web page
+response = requests.get(url)
+response.raise_for_status()  # Check if the request is successful
+
+# HTML parsing
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Extract the news article
+article_section = soup.find('section', class_='content__body')
+if article_section:
+    paragraphs = article_section.find_all('p')
+    article_text = '\n'.join([para.get_text() for para in paragraphs])
+    print(article_text)
+else:
+    print("Article is not found.")
+```
+
+### Text Analysis - semtimental
+```{python}
+# Create textblob
+blob = TextBlob(article_text)
+
+# Sentiment Analysis
+sentiment = blob.sentiment
+polarity = sentiment.polarity  # -1(negative) +1(oisitive)
+subjectivity = sentiment.subjectivity  # 0(objective) 1(subjective)
+
+print(f"Polarity: {polarity}")  # 0.10 (slightly positive)
+print(f"Subjectivity: {subjectivity}")  # 0.38 (relatively objective)
+```
+
+### Text Analysis - semtimental by sentence
+```{python}
+nlp = spacy.load("en_core_web_sm")
+
+doc = nlp(article_text)
+type(doc)
+
+sents = list(doc.sents)
+sents_list = list(doc.sents)
+sents_list
+
+for token in sents_list[1]:
+    print(token.text)
+```
+```{python}
+# Calculate setence polarity
+sentence_polarities = []
+for i, sentence in enumerate(sents_list):
+    blob = TextBlob(sentence.text)
+    polarity = blob.sentiment.polarity
+    sentence_polarities.append({"n": i + 1, "sentence": sentence.text, "polarity": polarity})
+
+# Create a DataFrame
+df_polarity = pd.DataFrame(sentence_polarities)
+
+# Print the outcome
+print(df_polarity)
+```
+```{python}
+# Create a graph about polarity by sentence
+chart_polarity = alt.Chart(df_polarity).mark_line().encode(
+    x=alt.X('n:Q', title='Sentence Number'),
+    y=alt.Y('polarity:Q', title='Polarity'),
+    tooltip=['sentence', 'polarity']
+).properties(
+    title='Sentence Polarity of Article',
+    width=800,
+    height=400
+).interactive()
+
+chart_polarity
+```
+
+### Text Analysis - semtimental by vocabulary
+```{python}
+# Load spaCy model
+nlp = spacy.load("en_core_web_sm")
+
+# Define custom stopwords
+custom_stopwords = {"said", "jones", "riggins", "thomas", "sinclair"}
+
+# Add custom stopwords to the basic stopwords in spaCy
+all_stopwords = nlp.Defaults.stop_words.union(custom_stopwords)
+
+# Remove stopwords and extract words
+words = [
+    token.text.lower()
+    for sentence in sents_list
+    for token in sentence
+    if token.is_alpha and token.text.lower() not in all_stopwords
+]
+
+# Calculate words frequency
+word_freq = Counter(words)
+
+# Extract top 10 words
+most_common_words = word_freq.most_common(10)
+df_word_freq = pd.DataFrame(most_common_words, columns=["word", "frequency"])
+
+# Print the outcome
+print(df_word_freq)
+```
+```{python}
+# Create a bar graph
+chart_word_frequency = alt.Chart(df_word_freq).mark_bar().encode(
+    x=alt.X("frequency:Q", title="Frequency"),
+    y=alt.Y("word:N", sort="-x", title="Word"),
+    tooltip=["word", "frequency"]
+).properties(
+    title="Top 10 Most Frequent Words (Excluding All Stopwords)",
+    width=600,
+    height=400
+)
+
+chart_word_frequency
+```
+
+
+# 2. Basic descriptive statistics 
+### Bar graph
+```{python}
+# Load the dataset.
+file_path = "/Users/tsaili-ting/Uchicago/Year2/Y2Fall/Python2/python_final/Public_Health_Statistics_-_Selected_public_health_indicators_by_Chicago_community_area_-_Historical_20241031.csv"
+data = pd.read_csv(file_path)
+data.head()
+```
+
+```{python}
+# Replace parentheses with empty strings, hyphens with underscores, and spaces with underscores in column names
+data.columns = data.columns.str.replace(r"[()]", "", regex=True).str.replace("-", "_").str.replace(" ", "_").str.lower()
+```
+
+```{python}
+# Remove unncessary columns
+columns_to_drop = [
+    "childhood_blood_lead_level_screening",
+    "childhood_lead_poisoning",
+    "gonorrhea_in_females"]
+data = data.drop(columns=columns_to_drop)
+```
+
+```{python}
+# 2-1-1. Create a table of cancer_all_sites (descending) by community area
+import pandas as pd
+import altair as alt
+
+# Select necessary columns from dataframe
+cancer_table = data[["community_area", "community_area_name", "cancer_all_sites"]].copy()
+
+# Drop na and arrange by descending
+cancer_table = cancer_table.dropna(subset=["cancer_all_sites"])
+cancer_table = cancer_table.sort_values(by="cancer_all_sites", ascending=False)
+
+# Initiate index
+cancer_table.reset_index(drop=True, inplace=True)
+
+# 2-1-2. Create a table of diabetes_related (descending) by community area
+# Select necessary columns from dataframe
+diabetes_table = data[["community_area", "community_area_name", "diabetes_related"]].copy()
+
+# Drop na and arrange by descending
+diabetes_table = diabetes_table.dropna(subset=["diabetes_related"])
+diabetes_table = diabetes_table.sort_values(by="diabetes_related", ascending=False)
+
+# Initiate index
+diabetes_table.reset_index(drop=True, inplace=True)
+
+
+# 2-1-3. Create a table of below_poverty_level (descending) by community area
+# Select necessary columns from dataframe
+poverty_table = data[["community_area", "community_area_name", "below_poverty_level"]].copy()
+
+# Drop na and arrange by descending
+poverty_table = poverty_table.dropna(subset=["below_poverty_level"])
+poverty_table = poverty_table.sort_values(by="below_poverty_level", ascending=False)
+
+# Initiate index
+poverty_table.reset_index(drop=True, inplace=True)
+
+
+# 2-1-4. Create a table of per_capita_income (descending) by community area
+# Select necessary columns from dataframe
+income_table = data[["community_area", "community_area_name", "per_capita_income"]].copy()
+
+# Drop na and arrange by descending
+income_table = income_table.dropna(subset=["per_capita_income"])
+income_table = income_table.sort_values(by="per_capita_income", ascending=False)
+
+# Initiate index
+income_table.reset_index(drop=True, inplace=True)
+
+
+# 2-1-5. Create a table of unemployment (descending) by community area
+# Select necessary columns from dataframe
+unemployment_table = data[["community_area", "community_area_name", "unemployment"]].copy()
+
+# Drop na and arrange by descending
+unemployment_table = unemployment_table.dropna(subset=["unemployment"])
+unemployment_table = unemployment_table.sort_values(by="unemployment", ascending=False)
+
+# Initiate index
+unemployment_table.reset_index(drop=True, inplace=True)
+```
+
+```{python}
+# 2-2-1. Create a table of cancer_all_sites (descending) by community area
+# Extractn top 10 community areas
+top_10_cancer_areas = cancer_table.head(10)
+
+# Create a bar chart
+bar_chart_cancer = alt.Chart(top_10_cancer_areas).mark_bar().encode(
+    x=alt.X("cancer_all_sites:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "cancer_all_sites"]
+).properties(
+    title="Top 10 Community Areas with Highest Cancer Index",
+    width=600,
+    height=400
+)
+
+bar_chart_cancer.show()
+
+
+# 2-2-2. Create a table of diabetes_related (descending) by community area
+# Extractn top 10 community areas
+top_10_diabetes_areas = diabetes_table.head(10)
+
+# Create a bar chart
+bar_chart_diabetes = alt.Chart(top_10_diabetes_areas).mark_bar().encode(
+    x=alt.X("diabetes_related:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "diabetes_related"]
+).properties(
+    title="Top 10 Community Areas with Highest Diabetes Index",
+    width=600,
+    height=400
+)
+
+bar_chart_diabetes.show()
+
+
+# 2-2-3. Create a table of below_poverty_level (descending) by community area
+# Extractn top 10 community areas
+top_10_poverty_areas = poverty_table.head(10)
+
+# Create a bar chart
+bar_chart_poverty = alt.Chart(top_10_poverty_areas).mark_bar().encode(
+    x=alt.X("below_poverty_level:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "below_poverty_level"]
+).properties(
+    title="Top 10 Community Areas with Highest Poverty Index",
+    width=600,
+    height=400
+)
+
+bar_chart_poverty.show()
+
+
+# 2-2-4. Create a table of per_capita_income (descending) by community area
+# Extractn top 10 community areas
+top_10_income_areas = income_table.head(10)
+
+# Create a bar chart
+bar_chart_income = alt.Chart(top_10_income_areas).mark_bar().encode(
+    x=alt.X("per_capita_income:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "per_capita_income"]
+).properties(
+    title="Top 10 Community Areas with Highest Income (per capita) Index",
+    width=600,
+    height=400
+)
+
+bar_chart_income.show()
+
+
+# 2-2-5. Create a table of unemployment (descending) by community area
+# Extractn top 10 community areas
+top_10_unemployment_areas = unemployment_table.head(10)
+
+# Create a bar chart
+bar_chart_unemployment = alt.Chart(top_10_unemployment_areas).mark_bar().encode(
+    x=alt.X("unemployment:Q", title="Cancer (All Sites)"),
+    y=alt.Y("community_area_name:N", sort="-x", title="Community Area"),
+    tooltip=["community_area_name", "unemployment"]
+).properties(
+    title="Top 10 Community Areas with Highest Unemployment Index",
+    width=600,
+    height=400
+)
+
+bar_chart_unemployment.show()
+```
+
+### Choropleth map 
+```{python}
+# reading chicago community shape file 
+chi_shp = gpd.read_file("chicomm/chicomm.shp")
+chi_shp = chi_shp.to_crs(epsg=32616)
+
+# spatial join demographic data
+chi_dem = pd.read_csv("/Users/tsaili-ting/Uchicago/Year2/Y2Fall/Python2/python_final/Public_Health_Statistics_-_Selected_public_health_indicators_by_Chicago_community_area_-_Historical_20241031.csv")
+
+# fix the wrong community name 
+chi_dem["Community Area Name"] = chi_dem["Community Area Name"].replace(
+    {"Montclaire": "Montclare"}
+)
+
+# Merge shp with the demographic dataset
+chi_shp_dem = chi_shp.merge(chi_dem, left_on="DISTITLE",right_on = "Community Area Name", how="outer")
+chi_shp_dem = chi_shp_dem.to_crs(epsg=32616)
+
+# save the shape + demographic dataset for shiny
+chi_shp_dem.to_file("chi_shp_dem.geojson", driver="GeoJSON")
+```
+
+#### Look at the color map in income, education, poverty rate, and health outcome
+```{python}
+columns = ['Cancer (All Sites)','Diabetes-related', 'Below Poverty Level','No High School Diploma', 'Per Capita Income', 'Unemployment']
+
+for col in columns:
+    fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+    chi_shp_dem.plot(
+        column=col, 
+        legend=True, 
+        ax=ax,
+        cmap="Blues"
+    )
+    ax.set_title(col)  # Set the title for the plot
+    plt.show()
+```
+
+# 3. Linear Regression 
+Independent Variable (X) : below_poverty_level, no_high_school_diploma, per_capita_income, unemployment
+
+Dependent Variable (Y) : cancer_all_sites, diabetes_related,breast_cancer_in_females,colorectal_cancer, infant_mortality_rate, lung_cancer, prostate_cancer_in_males, stroke_cerebrovascular_disease,  
+
+```{python}
+# 3-1-1. below_poverty_level ~ cancer_all_sites
+x = sm.add_constant(data["below_poverty_level"]) 
+y = data["cancer_all_sites"]                    
+model_1 = sm.OLS(y, x).fit()
+print(model_1.summary())
+
+# 3-1-2. per_capita_income ~ cancer_all_sites
+x = sm.add_constant(data["per_capita_income"]) 
+y = data["cancer_all_sites"]                    
+model_2 = sm.OLS(y, x).fit()
+print(model_2.summary())
+
+# 3-1-3. unemployment ~ cancer_all_sites
+x = sm.add_constant(data["unemployment"]) 
+y = data["cancer_all_sites"]                    
+model_3 = sm.OLS(y, x).fit()
+print(model_3.summary())
+
+# 3-1-4. below_poverty_level ~ diabetes_related
+x = sm.add_constant(data["below_poverty_level"]) 
+y = data["diabetes_related"]                    
+model_4 = sm.OLS(y, x).fit()
+print(model_4.summary())
+
+# 3-1-5. per_capita_income ~ diabetes_related
+x = sm.add_constant(data["per_capita_income"]) 
+y = data["diabetes_related"]                    
+model_5 = sm.OLS(y, x).fit()
+print(model_5.summary())
+
+# 3-1-6. unemployment ~ diabetes_related
+x = sm.add_constant(data["unemployment"]) 
+y = data["diabetes_related"]                    
+model_6 = sm.OLS(y, x).fit()
+print(model_6.summary())
+```
+
+# Crate plots with the analysis outcomes.
+```{python}
+# 3-2-1. below_poverty_level ~ cancer_all_sites
+
+x_var_1 = "below_poverty_level"
+y_var_1 = "cancer_all_sites"
+
+# Altair point plot
+scatter_plot_1 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_1}:Q", title="Below Poverty Level (%)"),
+    y=alt.Y(f"{y_var_1}:Q", title="Cancer (All Sites)"),
+    tooltip=[x_var_1, y_var_1]
+).properties(
+    title=f"Scatter Plot: {x_var_1} vs {y_var_1}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_1 = scatter_plot_1.transform_regression(
+    x_var_1, y_var_1, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_1 = scatter_plot_1 + trend_line_1
+
+final_chart_1
+
+
+# 3-2-2. per_capita_income ~ cancer_all_sites
+
+x_var_2 = "per_capita_income"
+y_var_2 = "cancer_all_sites"
+
+# Altair point plot
+scatter_plot_2 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_2}:Q", title="Per Capita Income"),
+    y=alt.Y(f"{y_var_2}:Q", title="Cancer (All Sites)"),
+    tooltip=[x_var_2, y_var_2]
+).properties(
+    title=f"Scatter Plot: {x_var_2} vs {y_var_2}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_2 = scatter_plot_2.transform_regression(
+    x_var_2, y_var_2, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_2 = scatter_plot_2 + trend_line_2
+
+final_chart_2
+
+
+# 3-2-3. unemployment ~ cancer_all_sites
+
+x_var_3 = "unemployment"
+y_var_3 = "cancer_all_sites"
+
+# Altair point plot
+scatter_plot_3 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_3}:Q", title="Unemployment"),
+    y=alt.Y(f"{y_var_3}:Q", title="Cancer (All Sites)"),
+    tooltip=[x_var_3, y_var_3]
+).properties(
+    title=f"Scatter Plot: {x_var_3} vs {y_var_3}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_3 = scatter_plot_3.transform_regression(
+    x_var_3, y_var_3, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_3 = scatter_plot_3 + trend_line_3
+
+final_chart_3
+
+
+# 3-2-4. below_poverty_level ~ diabetes_related
+
+x_var_4 = "below_poverty_level"
+y_var_4 = "diabetes_related"
+
+# Altair point plot
+scatter_plot_4 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_4}:Q", title="Below Poverty Level (%)"),
+    y=alt.Y(f"{y_var_4}:Q", title="Diabetes Related"),
+    tooltip=[x_var_4, y_var_4]
+).properties(
+    title=f"Scatter Plot: {x_var_4} vs {y_var_4}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_4 = scatter_plot_4.transform_regression(
+    x_var_4, y_var_4, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_4 = scatter_plot_4 + trend_line_4
+
+final_chart_4
+
+
+# 3-2-5. per_capita_income ~ diabetes_related
+
+x_var_5 = "per_capita_income"
+y_var_5 = "diabetes_related"
+
+# Altair point plot
+scatter_plot_5 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_5}:Q", title="Per Capita Income"),
+    y=alt.Y(f"{y_var_5}:Q", title="Diabetes Related"),
+    tooltip=[x_var_5, y_var_5]
+).properties(
+    title=f"Scatter Plot: {x_var_5} vs {y_var_5}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_5 = scatter_plot_5.transform_regression(
+    x_var_5, y_var_5, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_5 = scatter_plot_5 + trend_line_5
+
+final_chart_5
+
+
+# 3-2-6. unemployment ~ diabetes_related
+
+x_var_6 = "unemployment"
+y_var_6 = "diabetes_related"
+
+# Altair point plot
+scatter_plot_6 = alt.Chart(data).mark_point().encode(
+    x=alt.X(f"{x_var_6}:Q", title="Unemployment"),
+    y=alt.Y(f"{y_var_6}:Q", title="Diabetes Related"),
+    tooltip=[x_var_6, y_var_6]
+).properties(
+    title=f"Scatter Plot: {x_var_6} vs {y_var_6}",
+    width=500,
+    height=400
+)
+
+# Add line
+trend_line_6 = scatter_plot_6.transform_regression(
+    x_var_6, y_var_6, method="linear"
+).mark_line(color="red")
+
+# point plot + line
+final_chart_6 = scatter_plot_6 + trend_line_6
+
+final_chart_6
+```
+
+
+# 4. Spatial Analysis 
+### Creating 1 mile buffer map around community health center 
+```{python}
+# reading the file 
+filepath = "/Users/tsaili-ting/Uchicago/Year2/Y2Fall/Python2/python_final/Map_-_Public_Health_Services_-_Chicago_Primary_Care_Community_Health_Centers.csv"
+map = gpd.read_file(filepath)
+```
+
+```{python}
+#clean the dataset and make it a geo dataframe
+df = pd.DataFrame(map)
+
+# extract Coordinates
+df[['address', 'coordinates']] = df['Address'].str.extract(r'^(.*)\n\((.*)\)$')
+df[['latitude', 'longitude']] = df['coordinates'].str.split(', ', expand=True)
+
+# convert Latitude and Longitude to Numeric
+df['latitude'] = pd.to_numeric(df['latitude'])
+df['longitude'] = pd.to_numeric(df['longitude'])
+
+# create Geometry Column
+df['geometry'] = df.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
+
+# convert to GeoDataFrame
+gdf = gpd.GeoDataFrame(df, geometry='geometry')
+
+# crop unnecessary columns if desired
+gdf = gdf.drop(columns=['Address', 'coordinates'])
+```
+
+```{python}
+# filter GeoDataFrame to keep points within Chicago's bounding box
+point = gdf[
+    (gdf['latitude'] >= 41.64) & (gdf['latitude'] <= 42.02) &
+    (gdf['longitude'] >= -87.94) & (gdf['longitude'] <= -87.52)]
+# make a geojson file for shiny 
+point.to_file("point.geojson", driver="GeoJSON")
+
+```
+
+```{python}
+# Plot only the points in Chicago
+point.plot(marker='o', color='green', markersize=5, figsize=(5, 5))
+plt.title("Map of Locations in Chicago")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.grid(True)
+plt.show()
+```
+
+```{python}
+# match the crs code for creating buffer
+point = point.set_crs(epsg=4326)
+point = point.to_crs(epsg=32616)
+chi_shp = chi_shp.to_crs(epsg=32616)
+```
+
+### Base Map with the points
+```{python}
+# create a base map with the shapefile
+ax = chi_shp.plot(color='lightgrey', edgecolor='black', figsize=(5, 5), alpha=0.5)
+# overlay the points on the map
+point.plot(ax=ax, marker='o', color='red', markersize=10)
+plt.title("Chicago Map with Points")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.show()
+```
+
+### Highlight the area with the health centers
+```{python}
+# highlight the area that has Chicago Primary Care Community Health Centers
+# spatial join
+highlighted_areas = chi_shp.sjoin(point, how='inner', predicate='intersects')
+
+# keep only unique community areas
+highlighted_areas = highlighted_areas.drop_duplicates(subset=chi_shp.geometry.name)
+
+# add a highlight flag
+chi_shp["has_points"] = chi_shp.geometry.apply(lambda geom: geom in highlighted_areas.geometry.values)
+
+# plot shapefile, highlighting areas with points
+custom_cmap = ListedColormap(["yellow", "lightgrey"])
+ax = chi_shp.plot(
+    column="has_points", 
+    cmap=custom_cmap, 
+    edgecolor="grey",
+    figsize=(5, 5),
+    legend=True
+)
+
+# add the points to the map
+point.plot(ax=ax, marker='o', color='red', markersize=5, label="Points")
+
+# add labels and title
+plt.title("Highlighted Community Areas with Points")
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.legend()
+plt.show()
+```
+
+### Combined Demographic and Health outcome data 
+```{python}
+# fix the wrong community name 
+data["community_area_name"] = data["community_area_name"].replace(
+    {"Montclaire": "Montclare"})
+
+# Merge shp with the demographic dataset
+chi_shp_dem = chi_shp.merge(data, left_on="DISTITLE",right_on = "community_area_name", how="outer")
+chi_shp_dem = chi_shp_dem.to_crs(epsg=32616)
+
+# save the shape + demographic dataset for shiny
+chi_shp_dem.to_file("chi_shp_dem.geojson", driver="GeoJSON")
+
+```
+
+### Look at the 1 mile buffer for the primary care center 
+
+```{python}
+# create the 1 mile buffer 
+point["buffer"] = point.geometry.buffer(1609)
+buffers = gpd.GeoDataFrame(point, geometry="buffer", crs=point.crs)
+```
+
+#### Cancer mortality Rate in Community Area 
+```{python}
+fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+chi_shp_dem.plot(ax=ax, column="cancer_all_sites", cmap="Reds", edgecolor="lightgrey",legend=True, label="Cancer Rates")
+buffers.plot(ax=ax, color="blue", alpha=0.2, edgecolor="None")
+
+plt.title(" 1 Mile Buffers and Cancer Rates in Community Areas")
+plt.legend()
+plt.show()
+```
+
+#### Diabetes rate in Community Area 
+```{python}
+fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+chi_shp_dem.plot(ax=ax, column="diabetes_related", cmap="Blues", edgecolor="lightgrey",legend=True, label="Diabetes Rates")
+buffers.plot(ax=ax, color="blue", alpha=0.2, edgecolor="None")
+
+plt.title(" 1 Mile Buffers and Diabetes in Community Areas")
+plt.legend()
+plt.show()
+```
+
+#### Below Poverty Level in Community Area 
+```{python}
+fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+chi_shp_dem.plot(ax=ax, column="below_poverty_level", cmap="Greens", edgecolor="lightgrey",legend=True, label="Below Poverty Level")
+buffers.plot(ax=ax, color="blue", alpha=0.2, edgecolor="None")
+
+plt.title(" 1 Mile Buffers and Below Poverty Levelin Community Areas")
+plt.legend()
+plt.show()
+```
+
+
+# Write
+
+Relationship Between Socioeconomic Indicators and Public Health in Chicago
+
+Sohyun Lim & Ting Tsai
+
+1. Motivation and Research Question
+Disparities in cancer care and health outcomes across Chicago underscore the significant influence of socioeconomic factors on public health. Communities in Chicago’s West and South Sides face profound challenges such as poverty, unemployment, and limited access to healthcare, resulting in disproportionately higher cancer and diabetes mortality rates. This study aims to investigate the relationship between socioeconomic indicators and public health disparities across Chicago’s 77 neighborhoods through quantitative analysis and visualization.
+
+2. Data Sources
+The research utilizes the following datasets:
+1) CBS News Article: "Chicago's South, West Sides have many more cancer patients, less  
+access to care." (https://www.cbsnews.com/chicago/news/cancer-care-disparities-1/)
+2) Chicago Public Health Statistics (2007-2011) from Chicago Data Portal  (https://data.cityofchicago.org/Health-Human-Services/Public-Health-Statistics-Selected-public-health-in/iqnk-2tcu/about_data): Key indicators include:
+ - Health outcomes: Cancer and diabetes mortality rates (per 100,000 persons, age-adjusted).
+ - Socioeconomic status: Poverty rate, unemployment rate, no high school diploma (%), and per capita income.
+3) Chicago Public Health Service Map (https://data.cityofchicago.org/Health-Human-Services/Map-Public-Health-Services-Chicago-Primary-Care-Co/2usn-w2nz)
+: Geographic locations of primary care health centers in Chicago.
+4) Chicago geographical information (shape file) (https://www.lib.uchicago.edu/e/collections/maps/chigis.html) 
+
+3. Text Analysis
+The CBS News article highlights significant barriers to healthcare access in underserved communities. Sentiment analysis revealed a polarity score of 0.1 and a subjectivity score of 0.38, indicating an objective yet slightly positive tone. This positivity is likely influenced by terms such as "Hope," despite the article’s focus on systemic inequities. Word frequency analysis further emphasizes terms like "cancer," "access," and "South Side," reflecting the article’s central theme of healthcare disparity. 
+
+
+4. Descriptive Statistics
+Choropleth maps of socioeconomic factors and health outcomes reveal a clear spatial correlation. Communities in the South and West Sides experience higher poverty and unemployment rates, lower income levels, and poorer health outcomes, highlighting the geographic concentration of inequities. This pattern suggests a strong link between socioeconomic disadvantage and health disparities, particularly in chronic disease prevalence.
+
+
+5. Linear Regression Analysis
+To further quantify the relationship between socioeconomic indicators and health outcomes, we conducted six simple linear regression models. Results indicate that poverty and unemployment rates are positively associated with higher cancer and diabetes mortality rates, while income shows a negative association. All models were statistically significant, underscoring the critical role of socioeconomic factors in shaping public health outcomes.
+
+
+6. Spatial Analysis
+Spatial analysis integrating healthcare accessibility reveals significant gaps in service coverage. Using a 1-mile buffer around healthcare centers, maps illustrate that many communities in the South and West Sides lie outside accessible zones. These areas not only face socioeconomic and health challenges but also encounter limited access to healthcare services, exacerbating existing disparities.
+
+
+7. Shiny App Development
+A Shiny app was developed to enhance the interactivity of the analysis. The app includes (1) a dropdown menu to select attributes, (2) a checkbox and slider to customize buffer zones, and (3) multiple layouts (choropleth maps and tables) to explore socioeconomic and health data alongside healthcare access. Also, three layouts (Choropleth map, Choropleth map overlap with buffer, and table for the attribute) are displayed to help people find meaningful information on socioeconomic indicators and health outcomes with healthcare accessibility.
+
+8. Conclusion
+This study identifies the West and South Sides of Chicago as areas with the greatest socioeconomic challenges and health inequities. Socioeconomic indicators, such as poverty and unemployment, are strongly correlated with adverse health outcomes. Additionally, significant gaps in healthcare accessibility further compound these disparities.
+
+Future research will address limitations by incorporating multi-year datasets, expanding text analysis to diverse sources, and refining the Shiny app to provide a more comprehensive understanding of public health disparities in Chicago.
+
+
