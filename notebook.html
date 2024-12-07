@@ -72,44 +72,44 @@ ul.task-list li input[type="checkbox"] {
 <section id="write-up" class="level4">
 <h4 class="anchored" data-anchor-id="write-up">Write-Up</h4>
 </section>
-<section id="relationship-between-socioeconomic-indicators-and-public-health-in-chicago" class="level1">
-<h1>Relationship Between Socioeconomic Indicators and Public Health in Chicago</h1>
-<section id="sohyun-lim-ting-tsai" class="level2">
-<h2 class="anchored" data-anchor-id="sohyun-lim-ting-tsai">Sohyun Lim &amp; Ting Tsai</h2>
+<section id="sohyun-lim-ting-tsai" class="level4">
+<h4 class="anchored" data-anchor-id="sohyun-lim-ting-tsai">Sohyun Lim &amp; Ting Tsai</h4>
 <ol type="1">
-<li><p>Motivation and Research Question Disparities in cancer care and health outcomes across Chicago underscore the significant influence of socioeconomic factors on public health. Communities in Chicago’s West and South Sides face profound challenges such as poverty, unemployment, and limited access to healthcare, resulting in disproportionately higher cancer and diabetes mortality rates. This study aims to investigate the relationship between socioeconomic indicators and public health disparities across Chicago’s 77 neighborhoods through quantitative analysis and visualization.</p></li>
-<li><p>Data Sources The research utilizes the following datasets:</p>
-<ul>
-<li>CBS News Article: “Chicago’s South, West Sides have many more cancer patients, less access to care.” (https://www.cbsnews.com/chicago/news/cancer-care-disparities-1/)</li>
-<li>Chicago Public Health Statistics from Chicago Data Portal (https://data.cityofchicago.org/Health-Human-Services/Public-Health-Statistics-Selected-public-health-in/iqnk-2tcu/about_data): Key indicators include:
-<ul>
-<li>Health outcomes: Cancer and diabetes mortality rates (per 100,000 persons, age-adjusted).</li>
-<li>Socioeconomic status: Poverty rate, unemployment rate, and per capita income.</li>
-</ul></li>
-<li>Chicago Public Health Service Map (https://data.cityofchicago.org/Health-Human-Services/Map-Public-Health-Services-Chicago-Primary-Care-Co/2usn-w2nz) : Geographic locations of primary care health centers in Chicago.</li>
-<li>Chicago geographical information (shape file) (https://www.lib.uchicago.edu/e/collections/maps/chigis.html)</li>
-</ul></li>
-<li><p>Text Analysis The CBS News article highlights significant barriers to healthcare access in underserved communities. Sentiment analysis revealed a polarity score of 0.1 and a subjectivity score of 0.38, indicating an objective yet slightly positive tone. This positivity is likely influenced by terms such as “Hope,” despite the article’s focus on systemic inequities. Word frequency analysis further emphasizes terms like “cancer,” “access,” and “South Side,” reflecting the article’s central theme of healthcare disparity.</p></li>
+<li>Motivation and Research Question</li>
 </ol>
+<p>Disparities in cancer care and health outcomes across Chicago underscore the significant influence of socioeconomic factors on public health. Communities in Chicago’s West and South Sides face profound challenges such as poverty, unemployment, and limited access to healthcare, resulting in disproportionately higher cancer and diabetes mortality rates. This study aims to investigate the relationship between socioeconomic indicators and public health disparities across Chicago’s 77 neighborhoods through quantitative analysis and visualization.</p>
+<ol start="2" type="1">
+<li>Data Sources</li>
+</ol>
+<p>The research utilizes the following datasets: - CBS News Article: “Chicago’s South, West Sides have many more cancer patients, less access to care.” (https://www.cbsnews.com/chicago/news/cancer-care-disparities-1/) - Chicago Public Health Statistics from Chicago Data Portal (https://data.cityofchicago.org/Health-Human-Services/Public-Health-Statistics-Selected-public-health-in/iqnk-2tcu/about_data): Key indicators include: - Health outcomes: Cancer and diabetes mortality rates (per 100,000 persons, age-adjusted). - Socioeconomic status: Poverty rate, unemployment rate, and per capita income. - Chicago Public Health Service Map (https://data.cityofchicago.org/Health-Human-Services/Map-Public-Health-Services-Chicago-Primary-Care-Co/2usn-w2nz) : Geographic locations of primary care health centers in Chicago. - Chicago geographical information (shape file) (https://www.lib.uchicago.edu/e/collections/maps/chigis.html)</p>
+<ol start="3" type="1">
+<li>Text Analysis</li>
+</ol>
+<p>The CBS News article highlights significant barriers to healthcare access in underserved communities. Sentiment analysis revealed a polarity score of 0.1 and a subjectivity score of 0.38, indicating an objective yet slightly positive tone. This positivity is likely influenced by terms such as “Hope,” despite the article’s focus on systemic inequities. Word frequency analysis further emphasizes terms like “cancer,” “access,” and “South Side,” reflecting the article’s central theme of healthcare disparity.</p>
 <p><img src="pictures/5-1_writeup_textanalysis.png" class="img-fluid"></p>
 <ol start="4" type="1">
-<li>Descriptive Statistics Choropleth maps of socioeconomic factors and health outcomes reveal a clear spatial correlation. Communities in the South and West Sides experience higher poverty and unemployment rates, lower income levels, and poorer health outcomes, highlighting the geographic concentration of inequities. This pattern suggests a strong link between socioeconomic disadvantage and health disparities, particularly in chronic disease prevalence.</li>
+<li>Descriptive Statistics</li>
 </ol>
+<p>Choropleth maps of socioeconomic factors and health outcomes reveal a clear spatial correlation. Communities in the South and West Sides experience higher poverty and unemployment rates, lower income levels, and poorer health outcomes, highlighting the geographic concentration of inequities. This pattern suggests a strong link between socioeconomic disadvantage and health disparities, particularly in chronic disease prevalence.</p>
 <p><img src="pictures/5-2_writeup_descriptivestatistics.png" class="img-fluid"></p>
 <ol start="5" type="1">
-<li>Linear Regression Analysis To further quantify the relationship between socioeconomic indicators and health outcomes, we conducted six simple linear regression models. Results indicate that poverty and unemployment rates are positively associated with higher cancer and diabetes mortality rates, while income shows a negative association. All models were statistically significant, underscoring the critical role of socioeconomic factors in shaping public health outcomes.</li>
+<li>Linear Regression Analysis</li>
 </ol>
+<p>To further quantify the relationship between socioeconomic indicators and health outcomes, we conducted six simple linear regression models. Results indicate that poverty and unemployment rates are positively associated with higher cancer and diabetes mortality rates, while income shows a negative association. All models were statistically significant, underscoring the critical role of socioeconomic factors in shaping public health outcomes.</p>
 <p><img src="pictures/5-3_writeup_linearregression.png" class="img-fluid"></p>
 <ol start="6" type="1">
-<li>Spatial Analysis Spatial analysis integrating healthcare accessibility reveals significant gaps in service coverage. Using a 1-mile buffer around healthcare centers, maps illustrate that many communities in the South and West Sides lie outside accessible zones. These areas not only face socioeconomic and health challenges but also encounter limited access to healthcare services, exacerbating existing disparities.</li>
+<li>Spatial Analysis</li>
 </ol>
+<p>Spatial analysis integrating healthcare accessibility reveals significant gaps in service coverage. Using a 1-mile buffer around healthcare centers, maps illustrate that many communities in the South and West Sides lie outside accessible zones. These areas not only face socioeconomic and health challenges but also encounter limited access to healthcare services, exacerbating existing disparities.</p>
 <p><img src="pictures/5-4_writeup_spatialanalysis.png" class="img-fluid"></p>
 <ol start="7" type="1">
-<li><p>Shiny App Development A Shiny app was developed to enhance the interactivity of the analysis. The app includes (1) a dropdown menu to select attributes, (2) a checkbox and slider to customize buffer zones, and (3) multiple layouts (choropleth maps and tables) to explore socioeconomic and health data alongside healthcare access. Also, three layouts (Choropleth map, Choropleth map overlap with buffer, and table for the attribute) are displayed to help people find meaningful information on socioeconomic indicators and health outcomes with healthcare accessibility.</p></li>
-<li><p>Conclusion This study identifies the West and South Sides of Chicago as areas with the greatest socioeconomic challenges and health inequities. Socioeconomic indicators, such as poverty and unemployment, are strongly correlated with adverse health outcomes. Additionally, significant gaps in healthcare accessibility further compound these disparities.</p></li>
+<li>Shiny App Development</li>
 </ol>
-<p>Future research will address limitations by incorporating multi-year datasets, expanding text analysis to diverse sources, and refining the Shiny app to provide a more comprehensive understanding of public health disparities in Chicago.</p>
-</section>
+<p>A Shiny app was developed to enhance the interactivity of the analysis. The app includes (1) a dropdown menu to select attributes, (2) a checkbox and slider to customize buffer zones, and (3) multiple layouts (choropleth maps and tables) to explore socioeconomic and health data alongside healthcare access. Also, three layouts (Choropleth map, Choropleth map overlap with buffer, and table for the attribute) are displayed to help people find meaningful information on socioeconomic indicators and health outcomes with healthcare accessibility.</p>
+<ol start="8" type="1">
+<li>Conclusion</li>
+</ol>
+<p>This study identifies the West and South Sides of Chicago as areas with the greatest socioeconomic challenges and health inequities. Socioeconomic indicators, such as poverty and unemployment, are strongly correlated with adverse health outcomes. Additionally, significant gaps in healthcare accessibility further compound these disparities. Future research will address limitations by incorporating multi-year datasets, expanding text analysis to diverse sources, and refining the Shiny app to provide a more comprehensive understanding of public health disparities in Chicago.</p>
 </section>
 
 </main>
